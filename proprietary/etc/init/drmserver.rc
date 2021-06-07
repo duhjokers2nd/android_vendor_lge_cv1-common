@@ -1,0 +1,7 @@
+service drm /system/bin/drmserver
+    class main
+    user drm
+#[lg-drm@lge.com] Add net_raw group permission(QCT ATD method) for Widevine DRM
+    #group drm system inet drmrpc readproc
+    group drm system inet drmrpc readproc net_raw
+    writepid /dev/cpuset/foreground/tasks

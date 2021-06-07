@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<profiles>
+    <FeatureSet>
+        <!-- CALL [START] { -->
+        <item name="show_Mdn_For_VMS">true</item>
+        <item name="support_send_burst_dtmf">true</item>
+        <item name="support_cdma_forward_burst_dtmf">true</item>
+        <item name="support_emergency_callback_mode_for_gsm">true</item>
+        <item name="ecc_number_in_hidden_menu">true</item>
+        <item name="CHANGE_CDMA_SUBSCRIPTION_TO_RUIM">true</item>
+        <item name="MANUAL_SELECTION_WITH_RAT">true</item>
+        <item name="support_srlte">true</item>
+        <item name="support_volte_if">true</item>
+        <item name="is_ecm_supported_operator">true</item>
+        <item name="cdma_dtmf_tone_delay_int">200</item>
+        <item name="ims_dtmf_tone_delay_int">200</item>
+        <!-- CALL [END] } -->
+
+        <!-- SMS [START] { -->
+        <item name="cdma_kr_testbed_mms_receive">true</item>
+        <item name="KREncodingScheme">false</item>
+        <item name="KSC5601Decoding">true</item>
+
+        <item name="cdma_sms_cdg2">false</item>
+        <item name="cdma_priority_indicator">true</item>
+        <item name="cdma_privacy_indicator">true</item>
+        <item name="cdma_sms_callback">true</item>
+        <item name="increase_user_permit_sent_sms_max_count">true</item>
+        <item name="async_sending">true</item>
+        <item name="ensure_delivering_sms_to_app">true</item>
+
+        <item name="seperate_processing_sms_uicc">false</item>
+        <item name="uicc_csim">false</item>
+
+        <item name="dtmf_error_handle">true</item>
+        <item name="change_mdn_sync_vms">true</item>
+
+        <item name="sms_over_lgims">true</item>
+        <item name="sms_dan_send">true</item>
+        <item name="sms_dcn_send_usc">true</item>
+
+        <item name="set_default_sms_app_to_googlemessenger">true</item>
+        <!-- SMS [END] } -->
+    </FeatureSet>
+</profiles>

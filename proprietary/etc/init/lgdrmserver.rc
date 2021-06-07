@@ -1,0 +1,8 @@
+service lgdrm /system/bin/lgdrmserver
+    class main
+        user lgdrm
+            group lgdrm_acc net_raw
+
+# restart when servicemanager is restarted
+on property:init.svc.servicemanager=restarting
+     restart lgdrm

@@ -1,0 +1,87 @@
++#!/system/bin/sh
+sdcard=$(readlink -f /linux)
+
+kit=$sdcard/linux
+img=$kit/linux.img
+mnt=/linux/
+
+export bin=/system/bin
+export PATH=$bin:/usr/bin:/usr/sbin:/bin:$PATH
+export TERM=screen
+export HOME=/root
+
+#Froyo's apps-to-SD makes use of special loopback devices /dev/block/dm-#
+#Each program installed to SD uses up a normal loopback device.
+#We therefore have to make our own with a minor number that we hope
+#users will never reach.
+#Our mount will break if there are $loopno apps installed to SD
+loopno=254
+loop=/dev/block/loop$loopno
+
+
+case "$1" in
+    mount)
+	if mount | grep -q " $mnt "; then
+		echo "$img already mounted"
+		exit 2
+	fi
+	echo "Mounting: Prepwork ..."
+	#some ROMS mount the sdcard nodev
+	mount -o dev,remount $sdcard
+	#some also don't load filesystem drivers on boot
+	grep -q ext2 /proc/filesystems || modprobe ext2
+	
+	echo "Mounting: Loopback mount ..."
+	if [ ! -d $mnt ]; then
+		mkdir $mnt
+	fi
+	mknod $loop b 7 $loopno
+	losetup $loop $img
+	mount -t ext2 -o relatime $loop $mnt
+	
+	touch $img
+	
+	echo "Mounting: Setting up chroot environment ..."
+	mount -o bind /dev $mnt/dev
+	mount -t devpts devpts $mnt/dev/pts
+	mount -o bind /proc $mnt/proc
+	mount -o bind /sys $mnt/sys
+	
+	#make the SD card accessible to the chroot environment
+	if [ ! -d $mnt/media/sdcard ]; then
+		mkdir $mnt/media/sdcard
+	fi
+	mount -o bind $sdcard $mnt/media/sdcard
+	echo "	[ Done ]"
+	;;
+    umount)
+	echo "Umounting ..."
+	#awk '{print $2}' /proc/mounts | grep "^$mnt" | sort -r | xargs umount
+	cut -sd' ' -f2 /proc/mounts | grep "^$mnt" | sort -r | xargs umount
+	#umount $mnt/media/sdcard
+	#umount $mnt/sys
+	#umount $mnt/proc
+	#umount $mnt/dev/pts
+	#umount $mnt/dev
+	#umount $mnt
+	
+	losetup -d $loop
+	rm $loop
+	;;
+    chroot|"")
+	$0 mount
+	chroot $mnt /bin/bash
+	;;
+    ssh)
+	$0 mount
+	chroot $mnt /root/scripts/ssh.sh
+        ;;
+    vnc)
+	$0 mount
+	chroot $mnt /root/scripts/vnc.sh
+	;;
+    *)
+	echo "Usage: linux [[u]mount|chroot|ssh|vnc]"
+	exit 1
+	;;
+esac

@@ -1,0 +1,8 @@
+service lgsecclk /system/bin/lgsecclkserver
+    class main
+        user system
+            group system lgdrm_acc sdcard_rw media_rw
+
+# restart when servicemanager is restarted
+on property:init.svc.servicemanager=restarting
+     restart lgsecclk
